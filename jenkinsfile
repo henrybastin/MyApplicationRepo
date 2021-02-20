@@ -1,0 +1,22 @@
+pipeline {
+  agent any
+ 
+  tools {
+  maven 'Maven3'
+        }
+         
+  stage ("build") {
+          sh "${mvnHome}/bin/mvn clean install -f MyWebApp/pom.xml"
+                  }
+  stage ("code quality scan") 
+     withSonarQubeEnv('SonarQube')  { 
+     sh "${mvnHome}/bin/mvn -f MyWebApp/pom.xml sonar:sonar"
+                                    }
+                                    
+  stage ('JaCoCo') {
+      steps {
+      jacoco()
+                   }
+            }
+    }
+  
